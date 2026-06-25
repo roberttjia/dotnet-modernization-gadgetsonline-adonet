@@ -26,3 +26,24 @@
                   "ShoppingCart", new { id = Model.ProductId }, "")
     </p>
 </div>
+
+@{
+    var recommendations = ViewBag.FrequentlyBoughtTogether as List<GadgetsOnline.Models.Product>;
+}
+@if (recommendations != null && recommendations.Count > 0)
+{
+    <div id="frequently-bought-together">
+        <h3><em>Frequently bought together</em></h3>
+        <ul id="album-list">
+            @foreach (var product in recommendations)
+            {
+                <li>
+                    <a href="@Url.Action("Details", "Store", new { id = product.ProductId })">
+                        <img alt="@product.Name" src="@product.ProductArtUrl" />
+                        <span>@product.Name</span>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}

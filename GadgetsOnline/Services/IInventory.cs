@@ -8,6 +8,7 @@ namespace GadgetsOnline.Services
         List<Category> GetAllCategories();
         List<Product> GetAllProductsInCategory(string category);
         List<Product> GetBestSellers(int count);
+        List<Product> GetFrequentlyBoughtTogether(int productId, int count);
         Product GetProductById(int id);
         string GetProductNameById(int id);
     }

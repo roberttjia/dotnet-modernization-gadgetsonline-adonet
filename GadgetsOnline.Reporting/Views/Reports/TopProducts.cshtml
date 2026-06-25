@@ -1,0 +1,32 @@
+@model List<TopProductRow>
+@{
+    ViewData["Title"] = "Top Selling Products";
+}
+
+<h1>Top Selling Products</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Rank</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th class="text-end">Units Sold</th>
+            <th class="text-end">Revenue</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model)
+        {
+            <tr>
+                <td>@row.SalesRank</td>
+                <td>@row.ProductName</td>
+                <td>@row.CategoryName</td>
+                <td class="text-end">@row.UnitsSold</td>
+                <td class="text-end">@row.Revenue.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index">&laquo; Back to dashboard</a>

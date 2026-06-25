@@ -6,11 +6,20 @@
     <Platforms>AnyCPU;ARM64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GadgetsOnline.Data\GadgetsOnline.Data.csproj" />
   </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Ship the SQL scripts so Database.Initialize can run them from the content root. -->
+		<Content Include="Database\**\*.sql" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 </Project>

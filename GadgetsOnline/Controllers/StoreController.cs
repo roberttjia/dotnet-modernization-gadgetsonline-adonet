@@ -37,6 +37,10 @@ namespace GadgetsOnline.Controllers
         {
             //inventory = new Inventory();
             var album = _inventory.GetProductById(id);
+
+            // Customer-facing recommendation: products commonly bought with this one.
+            ViewBag.FrequentlyBoughtTogether = _inventory.GetFrequentlyBoughtTogether(id, 4);
+
             return View(album);
         }
     }

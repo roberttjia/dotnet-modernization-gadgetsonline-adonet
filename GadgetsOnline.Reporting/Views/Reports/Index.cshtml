@@ -1,0 +1,91 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Reports Dashboard";
+}
+
+<h1>Reports Dashboard</h1>
+<p class="text-muted">Live analytics from the GadgetsOnline database (read-only).</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Sales by Category</h3>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th class="text-end">Orders</th>
+                    <th class="text-end">Units</th>
+                    <th class="text-end">Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.SalesByCategory)
+                {
+                    <tr>
+                        <td>@row.CategoryName</td>
+                        <td class="text-end">@row.OrderCount</td>
+                        <td class="text-end">@row.UnitsSold</td>
+                        <td class="text-end">@row.Revenue.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-action="SalesByCategory">View full report</a>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Top Selling Products</h3>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th class="text-end">Units</th>
+                    <th class="text-end">Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.TopProducts)
+                {
+                    <tr>
+                        <td>@row.SalesRank</td>
+                        <td>@row.ProductName</td>
+                        <td>@row.CategoryName</td>
+                        <td class="text-end">@row.UnitsSold</td>
+                        <td class="text-end">@row.Revenue.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-action="TopProducts">View full report</a>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h3>Revenue by Month</h3>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th class="text-end">Orders</th>
+                    <th class="text-end">Revenue</th>
+                    <th class="text-end">Running Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.RevenueByMonth)
+                {
+                    <tr>
+                        <td>@row.MonthStart.ToString("MMM yyyy")</td>
+                        <td class="text-end">@row.OrderCount</td>
+                        <td class="text-end">@row.Revenue.ToString("C")</td>
+                        <td class="text-end">@row.RunningTotal.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-action="RevenueByMonth">View full report</a>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+@model List<CategorySalesRow>
+@{
+    ViewData["Title"] = "Sales by Category";
+}
+
+<h1>Sales by Category</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th class="text-end">Orders</th>
+            <th class="text-end">Units Sold</th>
+            <th class="text-end">Revenue</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model)
+        {
+            <tr>
+                <td>@row.CategoryName</td>
+                <td class="text-end">@row.OrderCount</td>
+                <td class="text-end">@row.UnitsSold</td>
+                <td class="text-end">@row.Revenue.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index">&laquo; Back to dashboard</a>

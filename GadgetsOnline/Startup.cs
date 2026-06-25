@@ -1,13 +1,13 @@
 
 using System;
-using GadgetsOnline.Models;
+using System.IO;
+using GadgetsOnline.Data;
 using GadgetsOnline.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Data.Entity;
 
 namespace GadgetsOnline
 {
@@ -33,10 +33,19 @@ namespace GadgetsOnline
             });
 
             services.AddControllersWithViews();
-            services.AddScoped<GadgetsOnlineEntities>(provider =>
-                new GadgetsOnlineEntities(Configuration.GetConnectionString(nameof(GadgetsOnlineEntities))));
 
-            Database.SetInitializer(new GadgetsOnlineInitializer());
+            // ADO.NET data layer. The Database helper owns the connection string;
+            // repositories wrap the stored procedures. The password is supplied
+            // separately (user secrets / environment) and merged in, so it is not
+            // stored in appsettings.json. The database name stays visible there.
+            var baseConnectionString = Configuration.GetConnectionString("GadgetsOnlineEntities");
+            var dbPassword = Configuration["DbPassword"];
+            var connectionString = Database.BuildConnectionString(baseConnectionString, dbPassword);
+            services.AddSingleton(new Database(connectionString));
+            services.AddScoped<ProductRepository>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<CartRepository>();
+            services.AddScoped<OrderRepository>();
 
             services.AddScoped<IInventory, Inventory>();
             services.AddScoped<IShoppingCart, ShoppingCart>();
@@ -47,12 +56,10 @@ namespace GadgetsOnline
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Initialize EF6 database on startup
-            using (var context = new GadgetsOnlineEntities(Configuration.GetConnectionString(nameof(GadgetsOnlineEntities))))
-            {
-                // This will trigger the initializer if needed
-                context.Database.Initialize(force: false);
-            }
+            // Bootstrap the database from SQL scripts (schema, procs, seed).
+            var database = app.ApplicationServices.GetRequiredService<Database>();
+            var scriptsDirectory = Path.Combine(env.ContentRootPath, "Database");
+            database.Initialize(scriptsDirectory);
 
             if (env.IsDevelopment())
             {
@@ -90,4 +97,3 @@ namespace GadgetsOnline
     }
 
 }
-

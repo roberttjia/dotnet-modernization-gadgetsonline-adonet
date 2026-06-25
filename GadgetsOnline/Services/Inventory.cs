@@ -1,53 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using GadgetsOnline.Data;
 using GadgetsOnline.Models;
 
 namespace GadgetsOnline.Services
 {
     public class Inventory : IInventory
     {
-        private readonly GadgetsOnlineEntities _gadgetsOnlineEntities;
+        private readonly ProductRepository _productRepository;
+        private readonly CategoryRepository _categoryRepository;
 
-        public Inventory(GadgetsOnlineEntities gadgetsOnlineEntities)
+        public Inventory(ProductRepository productRepository, CategoryRepository categoryRepository)
         {
-            _gadgetsOnlineEntities = gadgetsOnlineEntities;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
         }
-
-        //GadgetsOnlineEntities store = new GadgetsOnlineEntities();
 
         public List<Product> GetBestSellers(int count)
         {
-            return _gadgetsOnlineEntities.Products
-                    .Take(count)
-                    .ToList();
+            return _productRepository.GetBestSellers(count);
+        }
+
+        public List<Product> GetFrequentlyBoughtTogether(int productId, int count)
+        {
+            return _productRepository.GetFrequentlyBoughtTogether(productId, count);
         }
 
         public List<Category> GetAllCategories()
         {
-            return _gadgetsOnlineEntities.Categories.ToList();
+            return _categoryRepository.GetAll();
         }
 
         public List<Product> GetAllProductsInCategory(string category)
         {
-            return _gadgetsOnlineEntities.Products
-                    .Where(p => p.Category.Name == category)
-                    .ToList();
+            return _productRepository.GetByCategoryName(category);
         }
 
         public Product GetProductById(int id)
         {
-            return _gadgetsOnlineEntities.Products
-                   .Where(p => p.ProductId == id)
-                   .FirstOrDefault();
+            return _productRepository.GetById(id);
         }
 
         public string GetProductNameById(int id)
         {
-            return _gadgetsOnlineEntities.Products
-                   .Where(p => p.ProductId == id)
-                   .FirstOrDefault().Name;
+            return _productRepository.GetById(id)?.Name;
         }
     }
 }

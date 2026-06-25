@@ -1,0 +1,30 @@
+@model List<MonthlyRevenueRow>
+@{
+    ViewData["Title"] = "Revenue by Month";
+}
+
+<h1>Revenue by Month</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th class="text-end">Orders</th>
+            <th class="text-end">Revenue</th>
+            <th class="text-end">Running Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model)
+        {
+            <tr>
+                <td>@row.MonthStart.ToString("MMMM yyyy")</td>
+                <td class="text-end">@row.OrderCount</td>
+                <td class="text-end">@row.Revenue.ToString("C")</td>
+                <td class="text-end">@row.RunningTotal.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index">&laquo; Back to dashboard</a>

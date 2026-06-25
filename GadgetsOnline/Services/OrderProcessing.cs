@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using GadgetsOnline.Data;
 using GadgetsOnline.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -8,25 +6,22 @@ namespace GadgetsOnline.Services
 {
     public class OrderProcessing : IOrderProcessing
     {
-        private readonly GadgetsOnlineEntities _gadgetsOnlineEntities;
+        private readonly OrderRepository _orderRepository;
         private readonly IShoppingCart _shoppingCart;
 
-        public OrderProcessing(GadgetsOnlineEntities gadgetsOnlineEntities, IShoppingCart shoppingCart)
+        public OrderProcessing(OrderRepository orderRepository, IShoppingCart shoppingCart)
         {
-            _gadgetsOnlineEntities = gadgetsOnlineEntities;
+            _orderRepository = orderRepository;
             _shoppingCart = shoppingCart;
         }
 
-        //GadgetsOnlineEntities store = new GadgetsOnlineEntities();
-
         public bool ProcessOrder(Order order, HttpContext httpContext)
         {
-            _gadgetsOnlineEntities.Orders.Add(order);
-            _gadgetsOnlineEntities.SaveChanges();
-            //Process the order
-            //var cart = ShoppingCart.GetCart(httpContext); //OLD
-            var cart = _shoppingCart.GetCart(httpContext);
-            cart.CreateOrder(order);
+            // Resolve the current cart id, then place the entire order in a
+            // single transactional stored procedure (header + line items +
+            // total + cart cleanup all commit or roll back together).
+            var cartId = _shoppingCart.GetCartId(httpContext);
+            _orderRepository.PlaceOrder(cartId, order);
             return true;
         }
     }
